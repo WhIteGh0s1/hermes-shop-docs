@@ -10,7 +10,10 @@
 <style>
 @font-face{font-family:Benzin;src:url(static/benzin-bold.otf) format("opentype");font-weight:700;font-display:swap}
 :root{--bg:#0b0b0c;--panel:#141416;--line:#26262a;--text:#ececef;--muted:#9a9aa3;--accent:#fff;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--code:#1b1b1f}
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+a:focus,button:focus,summary:focus{outline:none}
+summary{list-style:none;-webkit-user-select:none;user-select:none}
+summary::-webkit-details-marker{display:none}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 Manrope,-apple-system,"Segoe UI",Roboto,sans-serif}
 h1,h2,h3,nav .brand,nav .grp,nav summary,.steps li:before{font-family:Benzin,Manrope,sans-serif;font-weight:700}
