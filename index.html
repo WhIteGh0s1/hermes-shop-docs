@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hermes Shop API — документация</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:Benzin;src:url(static/benzin-bold.otf) format("opentype");font-weight:700;font-display:swap}
+:root{--bg:#0b0b0c;--panel:#141416;--line:#26262a;--text:#ececef;--muted:#9a9aa3;--accent:#fff;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--code:#1b1b1f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 Manrope,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3,nav .brand,nav .grp,nav summary,.steps li:before{font-family:Benzin,Manrope,sans-serif;font-weight:700}
+a{color:var(--accent)}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto}
+nav{position:sticky;top:0;height:100vh;overflow:auto;padding:32px 20px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+html{scrollbar-width:thin;scrollbar-color:#2a2a2f transparent}
+::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+::-webkit-scrollbar-thumb{background:#2a2a2f;border-radius:6px}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+nav .brand{font-weight:800;letter-spacing:.08em;font-size:19px;margin-bottom:4px}
+nav .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+nav a{display:block;color:var(--muted);text-decoration:none;padding:3px 0;font-size:14px;transition:color .2s}
+nav a:hover{color:var(--text)}
+nav a.on{color:#fff}
+nav .grp{margin-top:16px;margin-bottom:2px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#f4f4f5}
+main{padding:28px 48px 80px;min-width:0}
+h1{font-size:36px;letter-spacing:0;margin:0 0 12px}
+h2{font-size:22px;margin:0 0 12px}
+.sec{margin:0 -20px;padding:20px 20px 4px;border-radius:14px;transition:background-color .9s ease-out}
+.sec.flash{background-color:rgba(255,255,255,.1);transition:background-color .15s ease-in}
+h3{font-size:15px;margin:20px 0 6px}
+p,li{color:#d4d4d8}
+.lead{font-size:18px;color:var(--muted);max-width:720px}
+code{font-family:"JetBrains Mono",Consolas,monospace;font-size:.88em;background:var(--code);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow:auto;font:13.5px/1.55 "JetBrains Mono",Consolas,monospace;color:#e4e4e7;margin:12px 0}
+pre code{background:none;border:0;padding:0;font-size:inherit}
+.copy{position:absolute;top:8px;right:8px;background:#26262b;color:var(--muted);border:1px solid var(--line);border-radius:6px;font-size:12px;padding:3px 9px;cursor:pointer}
+.copy:hover{color:var(--text)}
+.ep{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:16px 0 8px;font-family:"JetBrains Mono",Consolas,monospace}
+.m{font-weight:700;font-size:12px;border-radius:5px;padding:3px 8px;color:#000}
+.get{background:#e4e4e7}.post{background:var(--ok)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+td code{white-space:nowrap}
+.tabs{margin:12px 0}
+.tabs .bar{display:flex;gap:4px}
+.tabs .bar button{background:none;border:1px solid transparent;border-bottom:0;color:var(--muted);padding:6px 14px;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px}
+.tabs .bar button.on{background:var(--code);border-color:var(--line);color:var(--text)}
+.tabs pre{margin-top:0;border-top-left-radius:0}
+.tabs .pane{display:none}.tabs .pane.on{display:block}
+.note{border-left:3px solid var(--accent);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.note.warn{border-color:var(--warn)}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding-left:44px;margin:14px 0}
+.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#000;font-weight:800;display:grid;place-items:center;font-size:14px}
+.pill{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--muted)}
+.s-ok{color:var(--ok)}.s-warn{color:var(--warn)}.s-bad{color:var(--bad)}
+nav summary{display:none}
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  nav{position:static;height:auto;padding:18px 16px}
+  nav .sub{margin-bottom:10px}
+  nav summary{display:block;cursor:pointer;color:var(--text);font-size:14px;padding:6px 0}
+  nav details:not([open]) .links{display:none}
+  main{padding:28px 16px 80px}h1{font-size:30px}
+  table{display:block;overflow-x:auto}
+  .sec{margin:0 -10px;padding:16px 10px 2px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="brand">HERMES SHOP</div>
+  <div class="sub">API для партнёров · v1</div>
+  <details open><summary>☰ Содержание</summary><div class="links">
+  <div class="grp">Начало</div>
+  <a href="#intro">Что умеет API</a>
+  <a href="#quickstart">Быстрый старт</a>
+  <a href="#auth">Авторизация</a>
+  <a href="#format">Формат ответов</a>
+  <div class="grp">Методы</div>
+  <a href="#products">Список товаров</a>
+  <a href="#balance">Баланс</a>
+  <a href="#create-order">Покупка</a>
+  <a href="#get-order">Заказ по id</a>
+  <a href="#list-orders">История заказов</a>
+  <div class="grp">Подробности</div>
+  <a href="#statuses">Статусы заказа</a>
+  <a href="#activation">Данные для активации</a>
+  <a href="#preorder">Предзаказ</a>
+  <a href="#idempotency">Защита от повторов</a>
+  <a href="#errors">Ошибки</a>
+  <a href="#limits">Лимиты</a>
+  <a href="#recipe">Пример интеграции</a>
+  <a href="#faq">Частые вопросы</a>
+  </div></details>
+</nav>
+
+<main>
+<h1 id="intro">Hermes Shop API</h1>
+<p class="lead">Подключите каталог Hermes Shop к своему сайту, боту или магазину: получайте товары и цены, покупайте с баланса и сразу получайте товар — без ручной работы.</p>
+
+<p>Что можно делать через API:</p>
+<ul>
+  <li>получать актуальный каталог — названия, цены в рублях, наличие;</li>
+  <li>покупать товары с вашего баланса в боте и сразу получать данные товара в ответе;</li>
+  <li>оформлять предзаказы на товары, которых нет в наличии;</li>
+  <li>смотреть баланс и историю заказов.</li>
+</ul>
+<p>Базовый адрес: <code>https://АДРЕС-API</code> · Формат: JSON · Кодировка: UTF-8 · Валюта: рубли</p>
+
+<h2 id="quickstart">Быстрый старт</h2>
+<ol class="steps">
+  <li><b>Выпустите ключ.</b> Откройте бота → <b>Профиль</b> → <b>API-ключ</b> → <b>Выпустить ключ</b>. Ключ начинается с <code>hs_</code> и показывается <b>один раз</b> — сразу сохраните его.</li>
+  <li><b>Пополните баланс</b> в боте: Профиль → Пополнить баланс. Покупки через API списываются с этого баланса.</li>
+  <li><b>Сделайте первый запрос</b> — получите список товаров:</li>
+</ol>
+<pre><code>curl https://АДРЕС-API/api/v1/products \
+  -H "X-API-Key: hs_ВАШ_КЛЮЧ"</code></pre>
+<p>Нашли нужный товар — купите его одним запросом (см. <a href="#create-order">Покупка</a>). Товар придёт прямо в ответе, а копия — сообщением в бот.</p>
+
+<h2 id="auth">Авторизация</h2>
+<p>Каждый запрос к <code>/api/v1/…</code> должен содержать заголовок с ключом:</p>
+<pre><code>X-API-Key: hs_ВАШ_КЛЮЧ</code></pre>
+<ul>
+  <li>Ключ привязан к вашему аккаунту в боте: покупки идут с вашего баланса и видны в «Моих покупках».</li>
+  <li>Храните ключ только на сервере. Не вставляйте его в код сайта, который видят посетители, и в мобильные приложения.</li>
+  <li>Если ключ утёк — нажмите в боте <b>Перевыпустить ключ</b>. Старый ключ перестанет работать сразу.</li>
+</ul>
+
+<h2 id="format">Формат ответов</h2>
+<p>Все ответы — JSON. Успешный ответ содержит <code>"ok": true</code>, ошибка — <code>"ok": false</code> и объект <code>error</code>:</p>
+<pre><code>{
+  "ok": false,
+  "error": {
+    "code": "insufficient_balance",
+    "message": "Не хватает средств: нужно 625.0 ₽, на балансе 100.0 ₽"
+  }
+}</code></pre>
+<p>Проверяйте поле <code>error.code</code> — оно не меняется. Текст <code>message</code> — для людей и может уточняться. Суммы — числа в рублях с копейками (<code>625.0</code>), даты — ISO 8601 в UTC.</p>
+
+<h2 id="products">Список товаров</h2>
+<div class="ep"><span class="m get">GET</span>/api/v1/products</div>
+<p>Все товары, которые сейчас продаются. Цены и наличие обновляются автоматически каждые 5 минут — не храните их у себя надолго, запрашивайте перед показом покупателю.</p>
+<div class="tabs">
+  <div class="bar"><button class="on">curl</button><button>Python</button><button>JavaScript</button></div>
+  <div class="pane on"><pre><code>curl https://АДРЕС-API/api/v1/products -H "X-API-Key: hs_ВАШ_КЛЮЧ"</code></pre></div>
+  <div class="pane"><pre><code>import requests
+
+API = "https://АДРЕС-API/api/v1"
+HEADERS = {"X-API-Key": "hs_ВАШ_КЛЮЧ"}
+
+data = requests.get(f"{API}/products", headers=HEADERS, timeout=30).json()
+for p in data["products"]:
+    print(p["id"], p["name"], p["price"], "₽", "в наличии:", p["stock"])</code></pre></div>
+  <div class="pane"><pre><code>const API = "https://АДРЕС-API/api/v1";
+const headers = { "X-API-Key": "hs_ВАШ_КЛЮЧ" };
+
+const data = await fetch(`${API}/products`, { headers }).then(r =&gt; r.json());
+for (const p of data.products) console.log(p.id, p.name, p.price, "₽", p.stock);</code></pre></div>
+</div>
+<p>Ответ:</p>
+<pre><code>{
+  "ok": true,
+  "count": 147,
+  "products": [
+    {
+      "id": 42,
+      "name": "ChatGPT Plus 30D (Apple Pay) NW",
+      "category": "ChatGPT",
+      "price": 927.0,
+      "currency": "RUB",
+      "stock": 130,
+      "min_order": 1,
+      "activation": null,
+      "preorder": true
+    }
+  ]
+}</code></pre>
+<table>
+  <tr><th>Поле</th><th>Описание</th></tr>
+  <tr><td><code>id</code></td><td>ID товара — передаётся при покупке</td></tr>
+  <tr><td><code>name</code></td><td>Название</td></tr>
+  <tr><td><code>category</code></td><td>Категория в каталоге бота</td></tr>
+  <tr><td><code>price</code></td><td>Цена за 1 шт. в рублях (при <code>min_order</code> &gt; 1 — цена за штуку при минимальном заказе)</td></tr>
+  <tr><td><code>stock</code></td><td>Сколько можно купить прямо сейчас. <code>0</code> — нет в наличии, доступен только предзаказ</td></tr>
+  <tr><td><code>min_order</code></td><td>Минимальное количество в одном заказе</td></tr>
+  <tr><td><code>activation</code></td><td>Какие данные нужны для выдачи: <code>null</code> — никаких, иначе <code>email</code>, <code>username</code>, <code>link</code> или <code>country</code>. См. <a href="#activation">Данные для активации</a></td></tr>
+  <tr><td><code>preorder</code></td><td>Можно ли оформить предзаказ</td></tr>
+</table>
+
+<h2 id="balance">Баланс</h2>
+<div class="ep"><span class="m get">GET</span>/api/v1/balance</div>
+<pre><code>curl https://АДРЕС-API/api/v1/balance -H "X-API-Key: hs_ВАШ_КЛЮЧ"</code></pre>
+<pre><code>{ "ok": true, "user_id": 8115200073, "balance": 1500.0, "currency": "RUB" }</code></pre>
+<p>Пополнение — только в боте. Проверяйте баланс перед крупными покупками, чтобы не получить ошибку <code>insufficient_balance</code>.</p>
+
+<h2 id="create-order">Покупка</h2>
+<div class="ep"><span class="m post">POST</span>/api/v1/orders</div>
+<p>Списывает стоимость с баланса и сразу выдаёт товар. Запрос может занять до нескольких секунд — бот покупает товар у поставщика. Ставьте таймаут не меньше 60 секунд.</p>
+<table>
+  <tr><th>Поле</th><th>Тип</th><th></th><th>Описание</th></tr>
+  <tr><td><code>product_id</code></td><td>число</td><td><span class="pill">обязательно</span></td><td>ID товара из <a href="#products">списка</a></td></tr>
+  <tr><td><code>quantity</code></td><td>число</td><td>по умолчанию 1</td><td>Количество, не меньше <code>min_order</code></td></tr>
+  <tr><td><code>external_id</code></td><td>строка</td><td><span class="pill">рекомендуем</span></td><td>Ваш номер заказа, до 64 символов. Защищает от двойной покупки — см. <a href="#idempotency">Защита от повторов</a></td></tr>
+  <tr><td><code>activation_data</code></td><td>строка</td><td>если нужно</td><td>Email, username, ссылка или страна — когда у товара <code>activation</code> не <code>null</code></td></tr>
+  <tr><td><code>preorder</code></td><td>true/false</td><td>по умолчанию false</td><td>Оформить предзаказ, если товара нет в наличии</td></tr>
+</table>
+<div class="tabs">
+  <div class="bar"><button class="on">curl</button><button>Python</button><button>JavaScript</button></div>
+  <div class="pane on"><pre><code>curl -X POST https://АДРЕС-API/api/v1/orders \
+  -H "X-API-Key: hs_ВАШ_КЛЮЧ" \
+  -H "Content-Type: application/json" \
+  -d '{"product_id": 42, "quantity": 1, "external_id": "my-order-1001"}'</code></pre></div>
+  <div class="pane"><pre><code>resp = requests.post(
+    f"{API}/orders",
+    headers=HEADERS,
+    json={"product_id": 42, "quantity": 1, "external_id": "my-order-1001"},
+    timeout=90,
+)
+data = resp.json()
+if data["ok"] and data["order"]["status"] == "delivered":
+    for item in data["order"]["items"]:
+        print("Товар:", item)          # передайте покупателю
+else:
+    print("Ошибка:", data.get("error"))</code></pre></div>
+  <div class="pane"><pre><code>const resp = await fetch(`${API}/orders`, {
+  method: "POST",
+  headers: { ...headers, "Content-Type": "application/json" },
+  body: JSON.stringify({ product_id: 42, quantity: 1, external_id: "my-order-1001" }),
+});
+const data = await resp.json();
+if (data.ok &amp;&amp; data.order.status === "delivered") {
+  data.order.items.forEach(item =&gt; console.log("Товар:", item));
+} else {
+  console.error(data.error);
+}</code></pre></div>
+</div>
+<p>Ответ при успешной выдаче:</p>
+<pre><code>{
+  "ok": true,
+  "order": {
+    "id": 1057,
+    "external_id": "my-order-1001",
+    "product_id": 42,
+    "product_name": "ChatGPT Plus 30D (Apple Pay) NW",
+    "quantity": 1,
+    "amount": 927.0,
+    "currency": "RUB",
+    "status": "delivered",
+    "preorder": false,
+    "items": ["login@example.com:password123"],
+    "created_at": "2026-09-27T12:30:05+00:00",
+    "delivered_at": "2026-09-27T12:30:08+00:00"
+  }
+}</code></pre>
+<p><code>items</code> — выданные товары, по одной строке на единицу (логин:пароль, ключ, ссылка — зависит от товара).</p>
+<div class="note warn">Если поставщик не смог выдать товар, деньги <b>автоматически возвращаются на баланс</b>, заказ получает статус <code>refunded</code>, а ответ приходит с <code>"ok": false</code> и кодом <code>not_delivered</code>.</div>
+
+<h2 id="get-order">Заказ по id</h2>
+<div class="ep"><span class="m get">GET</span>/api/v1/orders/{id}</div>
+<pre><code>curl https://АДРЕС-API/api/v1/orders/1057 -H "X-API-Key: hs_ВАШ_КЛЮЧ"</code></pre>
+<p>Возвращает <code>{"ok": true, "order": {…}}</code> в том же формате, что и покупка. Используйте, чтобы проверить предзаказ или заказ на проверке.</p>
+
+<h2 id="list-orders">История заказов</h2>
+<div class="ep"><span class="m get">GET</span>/api/v1/orders?limit=50</div>
+<p>Последние заказы, новые сверху. <code>limit</code> — от 1 до 200, по умолчанию 50. Сюда попадают заказы и из API, и из бота.</p>
+<pre><code>{ "ok": true, "count": 2, "orders": [ { "id": 1057, "status": "delivered", … }, … ] }</code></pre>
+
+<h2 id="statuses">Статусы заказа</h2>
+<table>
+  <tr><th>Статус</th><th>Что значит</th><th>Что делать</th></tr>
+  <tr><td><code class="s-ok">delivered</code></td><td>Товар выдан, данные в <code>items</code></td><td>Передать покупателю</td></tr>
+  <tr><td><code class="s-warn">paid</code></td><td>Оплачен и ждёт выдачи — обычно это предзаказ</td><td>Проверять <a href="#get-order">GET /orders/{id}</a> раз в несколько минут</td></tr>
+  <tr><td><code class="s-warn">review</code></td><td>Связь с поставщиком оборвалась во время выдачи — заказ проверяет администратор</td><td>Подождать или написать в поддержку. Товар будет выдан или деньги вернутся</td></tr>
+  <tr><td><code class="s-bad">refunded</code></td><td>Не выдан, деньги вернулись на баланс</td><td>Можно попробовать позже или выбрать другой товар</td></tr>
+</table>
+
+<h2 id="activation">Данные для активации</h2>
+<p>Некоторые товары активируются на данных покупателя — например, подписка на его email или накрутка на его профиль. У таких товаров в каталоге поле <code>activation</code> не <code>null</code>, и при покупке нужно передать <code>activation_data</code>:</p>
+<table>
+  <tr><th>activation</th><th>Что передать</th><th>Пример</th></tr>
+  <tr><td><code>email</code></td><td>Email покупателя</td><td><code>user@gmail.com</code></td></tr>
+  <tr><td><code>username</code></td><td>Имя аккаунта (для соцсетей)</td><td><code>@my_profile</code></td></tr>
+  <tr><td><code>link</code></td><td>Ссылка на публикацию или профиль</td><td><code>https://instagram.com/p/xyz</code></td></tr>
+  <tr><td><code>country</code></td><td>Страна аккаунта</td><td><code>USA</code></td></tr>
+</table>
+<pre><code>{"product_id": 77, "quantity": 1, "activation_data": "user@gmail.com", "external_id": "my-order-1002"}</code></pre>
+<p>Без <code>activation_data</code> такой заказ вернёт ошибку <code>activation_required</code>, деньги не спишутся.</p>
+
+<h2 id="preorder">Предзаказ</h2>
+<p>Если <code>stock</code> равен 0 (или меньше нужного количества), товар можно купить заранее: передайте <code>"preorder": true</code>. Деньги списываются сразу, заказ получает статус <code>paid</code>. Как только товар поступит, он будет выдан <b>в первую очередь</b> — раньше обычных покупок, в порядке оформления предзаказов. Статус сменится на <code>delivered</code>, а данные появятся в <code>items</code> — проверяйте через <a href="#get-order">GET /orders/{id}</a>.</p>
+<pre><code>{"product_id": 42, "quantity": 3, "preorder": true, "external_id": "pre-2001"}</code></pre>
+
+<h2 id="idempotency">Защита от повторов</h2>
+<p>Сеть иногда обрывается: запрос дошёл, а ответ — нет. Чтобы при повторе не купить товар дважды, передавайте <code>external_id</code> — уникальный номер заказа в вашей системе.</p>
+<ul>
+  <li>Первый запрос с <code>external_id</code> создаёт заказ.</li>
+  <li>Повтор с тем же <code>external_id</code> <b>ничего не списывает</b> и возвращает тот же заказ с полем <code>"duplicate": true</code>.</li>
+</ul>
+<div class="note">Правило простое: получили таймаут или ошибку сети — повторите запрос <b>с тем же</b> <code>external_id</code>. Новый <code>external_id</code> — только для нового заказа.</div>
+
+<h2 id="errors">Ошибки</h2>
+<table>
+  <tr><th>HTTP</th><th>error.code</th><th>Причина</th></tr>
+  <tr><td>400</td><td><code>bad_request</code></td><td>Неверный JSON или поля не того типа</td></tr>
+  <tr><td>401</td><td><code>missing_api_key</code></td><td>Нет заголовка <code>X-API-Key</code></td></tr>
+  <tr><td>401</td><td><code>invalid_api_key</code></td><td>Ключ неверный или перевыпущен</td></tr>
+  <tr><td>402</td><td><code>insufficient_balance</code></td><td>Не хватает денег на балансе — пополните в боте</td></tr>
+  <tr><td>404</td><td><code>product_not_found</code></td><td>Товара нет или он снят с продажи — обновите каталог</td></tr>
+  <tr><td>404</td><td><code>order_not_found</code></td><td>Заказа с таким id нет у вашего аккаунта</td></tr>
+  <tr><td>409</td><td><code>out_of_stock</code></td><td>Нет нужного количества — уменьшите количество или оформите предзаказ</td></tr>
+  <tr><td>409</td><td><code>not_delivered</code></td><td>Поставщик не выдал товар, деньги возвращены на баланс</td></tr>
+  <tr><td>422</td><td><code>quantity_too_small</code></td><td>Количество меньше <code>min_order</code></td></tr>
+  <tr><td>422</td><td><code>activation_required</code></td><td>Нужно поле <code>activation_data</code></td></tr>
+  <tr><td>422</td><td><code>preorder_not_allowed</code></td><td>Для товара предзаказ отключён</td></tr>
+  <tr><td>429</td><td><code>rate_limited</code></td><td>Слишком много запросов — подождите секунду</td></tr>
+</table>
+<p>При ошибках 4xx (кроме 429) деньги не списываются. Повторять такой запрос без изменений нет смысла.</p>
+
+<h2 id="limits">Лимиты</h2>
+<ul>
+  <li>До <b>10 запросов в секунду</b> на один ключ. При превышении — ошибка <code>429</code>, повторите через секунду.</li>
+  <li>Каталог обновляется раз в 5 минут — чаще запрашивать его не нужно. Кэшируйте список товаров у себя на 1–5 минут.</li>
+  <li>Таймаут для покупки — не меньше 60 секунд.</li>
+</ul>
+
+<h2 id="recipe">Пример интеграции</h2>
+<p>Типичный сценарий: у вас свой бот или сайт, и вы перепродаёте товары Hermes Shop.</p>
+<ol class="steps">
+  <li>Раз в несколько минут загружайте <code>/products</code> и показывайте покупателям товары со своей ценой.</li>
+  <li>Покупатель оплатил у вас — вызовите <code>POST /orders</code> с <code>external_id</code> = номер заказа в вашей системе.</li>
+  <li>Если статус <code>delivered</code> — отдайте покупателю строки из <code>items</code>.</li>
+  <li>Если <code>paid</code> (предзаказ) или <code>review</code> — сохраните <code>order.id</code> и проверяйте его, пока не станет <code>delivered</code>.</li>
+  <li>Если ошибка сети — повторите тот же запрос с тем же <code>external_id</code>.</li>
+</ol>
+<div class="tabs">
+  <div class="bar"><button class="on">Python</button></div>
+  <div class="pane on"><pre><code>import time
+import requests
+
+API = "https://АДРЕС-API/api/v1"
+HEADERS = {"X-API-Key": "hs_ВАШ_КЛЮЧ"}
+
+
+def buy(product_id: int, qty: int, my_order_id: str, activation: str | None = None) -&gt; list[str]:
+    """Купить товар и дождаться выдачи. Возвращает строки товара."""
+    body = {"product_id": product_id, "quantity": qty, "external_id": my_order_id}
+    if activation:
+        body["activation_data"] = activation
+
+    for attempt in range(3):  # повтор при сбое сети — с тем же external_id, без двойного списания
+        try:
+            data = requests.post(f"{API}/orders", headers=HEADERS, json=body, timeout=90).json()
+            break
+        except requests.RequestException:
+            time.sleep(2 * (attempt + 1))
+    else:
+        raise RuntimeError("API недоступен")
+
+    if not data["ok"]:
+        raise RuntimeError(data["error"]["message"])
+
+    order = data["order"]
+    while order["status"] in ("paid", "review"):  # предзаказ или проверка — ждём
+        time.sleep(60)
+        order = requests.get(f"{API}/orders/{order['id']}", headers=HEADERS, timeout=30).json()["order"]
+
+    if order["status"] != "delivered":
+        raise RuntimeError("Заказ не выдан, деньги вернулись на баланс")
+    return order["items"]</code></pre></div>
+</div>
+
+<h2 id="faq">Частые вопросы</h2>
+<h3>Цены в API такие же, как в боте?</h3>
+<p>Да, это те же цены, что видят покупатели в боте, в рублях.</p>
+<h3>Где посмотреть заказы, сделанные через API?</h3>
+<p>В боте: Профиль → Мои покупки. Там же — данные выданных товаров. Бот также присылает сообщение о каждой выдаче.</p>
+<h3>Можно ли несколько ключей?</h3>
+<p>Один аккаунт — один ключ. Перевыпуск отключает старый ключ.</p>
+<h3>Товар выдан, но не работает</h3>
+<p>Напишите в поддержку через бота (Профиль → Поддержка) и укажите номер заказа <code>id</code>.</p>
+<h3>Как проверить, что сервис доступен?</h3>
+<p><code>GET https://АДРЕС-API/health</code> — без ключа, отвечает <code>{"ok": true}</code>.</p>
+</main>
+</div>
+<script>
+// Каждый раздел (заголовок + содержимое до следующего заголовка) — в блок .sec для подсветки
+document.querySelectorAll('main h1, main h2').forEach(h => {
+  const sec = document.createElement('section'); sec.className = 'sec';
+  h.before(sec);
+  let node = h;
+  while (node && !(node !== h && /^H[12]$/.test(node.tagName))) { const next = node.nextElementSibling; sec.appendChild(node); node = next; }
+});document.querySelectorAll('nav a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const target = document.getElementById(a.getAttribute('href').slice(1));
+  if (!target) return;
+  e.preventDefault();
+  const box = target.closest('.sec') || target;
+  window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - 12, behavior: 'smooth' });
+  history.replaceState(null, '', a.getAttribute('href'));
+  document.querySelectorAll('nav a.on').forEach(x => x.classList.remove('on'));
+  a.classList.add('on');
+  box.classList.remove('flash'); void box.offsetWidth;  // перезапуск подсветки при повторном клике
+  box.classList.add('flash');
+  setTimeout(() => box.classList.remove('flash'), 450);
+}));if (matchMedia('(max-width:860px)').matches) document.querySelector('nav details').removeAttribute('open');
+document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { if (matchMedia('(max-width:860px)').matches) document.querySelector('nav details').removeAttribute('open'); }));
+document.querySelectorAll('.tabs').forEach(t => {
+  const btns = t.querySelectorAll('.bar button'), panes = t.querySelectorAll('.pane');
+  btns.forEach((b, i) => b.onclick = () => {
+    btns.forEach(x => x.classList.remove('on')); panes.forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); panes[i].classList.add('on');
+  });
+});
+document.querySelectorAll('pre').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy'; btn.textContent = 'Копировать';
+  btn.onclick = () => navigator.clipboard.writeText(pre.innerText.replace(/Копировать$/, '').trim())
+    .then(() => { btn.textContent = 'Скопировано'; setTimeout(() => btn.textContent = 'Копировать', 1500); });
+  pre.appendChild(btn);
+});
+</script>
+</body>
+</html>
