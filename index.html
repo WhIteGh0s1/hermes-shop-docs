@@ -67,7 +67,9 @@ td code{white-space:nowrap}
 nav summary{display:none}
 @media (max-width:860px){
   .wrap{grid-template-columns:1fr}
-  nav{position:static;height:auto;padding:18px 16px}
+  nav{position:sticky;top:0;z-index:10;height:auto;padding:12px 16px;background:var(--bg);box-shadow:0 8px 16px -8px rgba(0,0,0,.8)}
+  nav .brand{font-size:16px;margin-bottom:0}
+  nav details[open] .links{max-height:65vh;overflow:auto;scrollbar-width:none;padding-bottom:8px}
   nav .sub{margin-bottom:10px}
   nav summary{display:block;cursor:pointer;color:var(--text);font-size:14px;padding:6px 0}
   nav details:not([open]) .links{display:none}
@@ -401,21 +403,27 @@ document.querySelectorAll('main h1, main h2').forEach(h => {
   h.before(sec);
   let node = h;
   while (node && !(node !== h && /^H[12]$/.test(node.tagName))) { const next = node.nextElementSibling; sec.appendChild(node); node = next; }
-});document.querySelectorAll('nav a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+});
+const mobile = () => matchMedia('(max-width:860px)').matches;
+const toc = document.querySelector('nav details');
+if (mobile()) toc.removeAttribute('open');
+document.querySelectorAll('nav a[href^="#"]').forEach(a => a.addEventListener('click', e => {
   const target = document.getElementById(a.getAttribute('href').slice(1));
   if (!target) return;
   e.preventDefault();
-  const box = target.closest('.sec') || target;
-  window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - 12, behavior: 'smooth' });
-  history.replaceState(null, '', a.getAttribute('href'));
-  document.querySelectorAll('nav a.on').forEach(x => x.classList.remove('on'));
-  a.classList.add('on');
-  box.classList.remove('flash'); void box.offsetWidth;  // перезапуск подсветки при повторном клике
-  box.classList.add('flash');
-  setTimeout(() => box.classList.remove('flash'), 450);
-}));if (matchMedia('(max-width:860px)').matches) document.querySelector('nav details').removeAttribute('open');
-document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { if (matchMedia('(max-width:860px)').matches) document.querySelector('nav details').removeAttribute('open'); }));
-document.querySelectorAll('.tabs').forEach(t => {
+  if (mobile()) toc.removeAttribute('open');  // сначала сворачиваем меню — иначе страница съедет после расчёта
+  {  // замер после сворачивания: getBoundingClientRect пересчитывает раскладку сразу
+    const box = target.closest('.sec') || target;
+    const offset = mobile() ? document.querySelector('nav').offsetHeight + 8 : 12;
+    window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    history.replaceState(null, '', a.getAttribute('href'));
+    document.querySelectorAll('nav a.on').forEach(x => x.classList.remove('on'));
+    a.classList.add('on');
+    box.classList.remove('flash'); void box.offsetWidth;  // перезапуск подсветки при повторном клике
+    box.classList.add('flash');
+    setTimeout(() => box.classList.remove('flash'), 450);
+  }
+}));document.querySelectorAll('.tabs').forEach(t => {
   const btns = t.querySelectorAll('.bar button'), panes = t.querySelectorAll('.pane');
   btns.forEach((b, i) => b.onclick = () => {
     btns.forEach(x => x.classList.remove('on')); panes.forEach(x => x.classList.remove('on'));
